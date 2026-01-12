@@ -1,0 +1,1029 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-Commerce Sales & Revenue Analytics Dashboard | Som Athghara</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #1a1a2e;
+            --secondary: #16213e;
+            --accent: #0f4c75;
+            --highlight: #3282b8;
+            --light: #bbe1fa;
+            --text: #2d3748;
+            --text-light: #718096;
+            --border: #e2e8f0;
+            --success: #48bb78;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            line-height: 1.6;
+            color: var(--text);
+            background: #f7fafc;
+        }
+
+        /* Navigation */
+        nav {
+            background: white;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 70px;
+        }
+
+        .logo {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: var(--text);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent);
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 50%, var(--accent) 100%);
+            color: white;
+            padding: 100px 20px 80px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><rect width="2" height="2" fill="white" opacity="0.1"/></svg>');
+            opacity: 0.3;
+        }
+
+        .hero-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-tag {
+            display: inline-block;
+            background: rgba(255,255,255,0.15);
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            margin-bottom: 20px;
+            backdrop-filter: blur(10px);
+        }
+
+        .hero h1 {
+            font-size: clamp(2.2rem, 5vw, 3.8rem);
+            font-weight: 800;
+            margin-bottom: 20px;
+            line-height: 1.2;
+        }
+
+        .hero-subtitle {
+            font-size: clamp(1.1rem, 2.5vw, 1.4rem);
+            opacity: 0.9;
+            margin-bottom: 40px;
+            max-width: 700px;
+        }
+
+        .hero-meta {
+            display: flex;
+            gap: 30px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.95rem;
+            background: rgba(255,255,255,0.1);
+            padding: 10px 20px;
+            border-radius: 8px;
+            backdrop-filter: blur(10px);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 80px 20px;
+        }
+
+        /* Metrics Cards */
+        .metrics-section {
+            background: white;
+            margin: -60px auto 0;
+            max-width: 1200px;
+            padding: 0 20px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            background: white;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.08);
+        }
+
+        .metric-card {
+            text-align: center;
+            padding: 30px 20px;
+            border-right: 1px solid var(--border);
+        }
+
+        .metric-card:last-child {
+            border-right: none;
+        }
+
+        .metric-value {
+            font-size: clamp(2rem, 4vw, 2.8rem);
+            font-weight: 700;
+            color: var(--accent);
+            margin-bottom: 8px;
+        }
+
+        .metric-label {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
+
+        /* Section Styles */
+        .section {
+            margin-bottom: 80px;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .section-tag {
+            color: var(--accent);
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 15px;
+        }
+
+        h2 {
+            font-size: clamp(2rem, 4vw, 2.8rem);
+            color: var(--primary);
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        .section-description {
+            color: var(--text-light);
+            font-size: 1.1rem;
+            max-width: 700px;
+            margin: 0 auto;
+            line-height: 1.8;
+        }
+
+        /* Content Cards */
+        .content-card {
+            background: white;
+            border-radius: 12px;
+            padding: 40px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            border: 1px solid var(--border);
+            margin-bottom: 30px;
+        }
+
+        .content-card h3 {
+            color: var(--primary);
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .content-card p {
+            color: var(--text-light);
+            line-height: 1.8;
+            font-size: 1.05rem;
+        }
+
+        /* Tech Stack */
+        .tech-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+        }
+
+        .tech-item {
+            background: white;
+            border: 2px solid var(--border);
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: 600;
+            color: var(--accent);
+            transition: all 0.3s ease;
+        }
+
+        .tech-item:hover {
+            border-color: var(--accent);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(15,76,117,0.1);
+        }
+
+        /* Achievements Grid */
+        .achievements-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+        }
+
+        .achievement-item {
+            background: white;
+            padding: 35px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            transition: all 0.3s ease;
+        }
+
+        .achievement-item:hover {
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transform: translateY(-5px);
+        }
+
+        .achievement-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--accent), var(--highlight));
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+        }
+
+        .achievement-item h4 {
+            color: var(--primary);
+            font-size: 1.2rem;
+            margin-bottom: 12px;
+            font-weight: 700;
+        }
+
+        .achievement-item p {
+            color: var(--text-light);
+            line-height: 1.7;
+        }
+
+        /* Findings */
+        .findings-list {
+            display: grid;
+            gap: 20px;
+        }
+
+        .finding-card {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            border-left: 4px solid var(--accent);
+            display: flex;
+            gap: 25px;
+            align-items: start;
+            border: 1px solid var(--border);
+            border-left-width: 4px;
+        }
+
+        .finding-number {
+            min-width: 50px;
+            height: 50px;
+            background: var(--accent);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+
+        .finding-content h4 {
+            color: var(--primary);
+            font-size: 1.15rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .finding-content p {
+            color: var(--text-light);
+            line-height: 1.7;
+        }
+
+        /* Recommendations */
+        .recommendations-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 25px;
+        }
+
+        .recommendation-card {
+            background: white;
+            padding: 35px;
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            transition: all 0.3s ease;
+        }
+
+        .recommendation-card:hover {
+            border-color: var(--accent);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+        }
+
+        .recommendation-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .recommendation-icon {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, var(--accent), var(--highlight));
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+        .recommendation-card h4 {
+            color: var(--primary);
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+
+        .recommendation-card ul {
+            list-style: none;
+        }
+
+        .recommendation-card li {
+            padding: 10px 0;
+            padding-left: 30px;
+            position: relative;
+            color: var(--text-light);
+            line-height: 1.6;
+        }
+
+        .recommendation-card li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: var(--success);
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        /* Timeline */
+        .timeline {
+            position: relative;
+            padding-left: 40px;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: var(--border);
+        }
+
+        .timeline-item {
+            position: relative;
+            padding: 25px 0;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -46px;
+            top: 30px;
+            width: 14px;
+            height: 14px;
+            background: var(--accent);
+            border-radius: 50%;
+            border: 3px solid white;
+            box-shadow: 0 0 0 2px var(--accent);
+        }
+
+        .timeline-content {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+        }
+
+        .timeline-content h4 {
+            color: var(--primary);
+            font-size: 1.2rem;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .timeline-content p {
+            color: var(--text-light);
+            line-height: 1.7;
+        }
+
+        /* Impact Section */
+        .impact-banner {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            color: white;
+            padding: 60px 40px;
+            border-radius: 16px;
+            text-align: center;
+            margin: 60px 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .impact-banner::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+        }
+
+        .impact-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .impact-banner h3 {
+            font-size: 1.3rem;
+            margin-bottom: 20px;
+            font-weight: 600;
+            opacity: 0.9;
+        }
+
+        .impact-value {
+            font-size: clamp(3rem, 6vw, 5rem);
+            font-weight: 800;
+            margin: 20px 0;
+            line-height: 1;
+        }
+
+        .impact-description {
+            font-size: 1.15rem;
+            opacity: 0.95;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            text-align: center;
+            background: white;
+            padding: 60px 40px;
+            border-radius: 16px;
+            border: 1px solid var(--border);
+        }
+
+        .cta-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-top: 30px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 16px 35px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(15,76,117,0.2);
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--accent);
+            border-color: var(--accent);
+        }
+
+        .btn-outline:hover {
+            background: var(--accent);
+            color: white;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--primary);
+            color: white;
+            padding: 60px 20px 30px;
+            margin-top: 80px;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .footer-section h4 {
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        .footer-section p,
+        .footer-section a {
+            color: rgba(255,255,255,0.8);
+            text-decoration: none;
+            display: block;
+            margin-bottom: 10px;
+            transition: color 0.3s;
+        }
+
+        .footer-section a:hover {
+            color: white;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .social-link {
+            width: 50px;
+            height: 50px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+            text-decoration: none;
+            color: white;
+            font-weight: 700;
+            font-size: 1.3rem;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .social-link:hover {
+            background: var(--accent);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(50, 130, 184, 0.3);
+            border-color: var(--accent);
+        }
+
+        .social-link svg {
+            width: 24px;
+            height: 24px;
+            fill: currentColor;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 30px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            color: rgba(255,255,255,0.7);
+            font-size: 0.9rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .hero {
+                padding: 60px 20px 50px;
+            }
+
+            .container {
+                padding: 50px 20px;
+            }
+
+            .metrics-grid {
+                padding: 30px 20px;
+            }
+
+            .metric-card {
+                border-right: none;
+                border-bottom: 1px solid var(--border);
+                padding: 20px;
+            }
+
+            .metric-card:last-child {
+                border-bottom: none;
+            }
+
+            .content-card {
+                padding: 25px;
+            }
+
+            .timeline {
+                padding-left: 30px;
+            }
+
+            .timeline-item::before {
+                left: -36px;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-on-scroll {
+            animation: fadeInUp 0.6s ease-out;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <div class="logo">Som Athghara</div>
+            <ul class="nav-links">
+                <li><a href="#overview">Overview</a></li>
+                <li><a href="#achievements">Achievements</a></li>
+                <li><a href="#findings">Findings</a></li>
+                <li><a href="#recommendations">Recommendations</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <div class="hero-tag">DATA ANALYTICS PROJECT</div>
+            <h1>E-Commerce Sales & Revenue Analytics Dashboard</h1>
+            <p class="hero-subtitle">Comprehensive analysis of 541,912 transactions delivering actionable insights for revenue optimization and strategic decision-making</p>
+            <div class="hero-meta">
+                <div class="meta-item">
+                    <span>📅</span>
+                    <span>January 2026</span>
+                </div>
+                <div class="meta-item">
+                    <span>⏱️</span>
+                    <span>3-Week Development</span>
+                </div>
+                <div class="meta-item">
+                    <span>🗄️</span>
+                    <span>MySQL + Excel</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Metrics Section -->
+    <section class="metrics-section">
+        <div class="metrics-grid">
+            <div class="metric-card">
+                <div class="metric-value">₹4.01 Cr</div>
+                <div class="metric-label">Total Revenue</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value">541,912</div>
+                <div class="metric-label">Transactions</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value">22,068</div>
+                <div class="metric-label">Total Orders</div>
+            </div>
+            <div class="metric-card">
+                <div class="metric-value">4,373</div>
+                <div class="metric-label">Unique Customers</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Overview Section -->
+    <div class="container" id="overview">
+        <section class="section">
+            <div class="section-header">
+                <div class="section-tag">Project Overview</div>
+                <h2>Transforming Data Into Strategic Insights</h2>
+                <p class="section-description">
+                    A comprehensive data analytics initiative that processed over half a million e-commerce transactions spanning 2010-2011, utilizing advanced SQL queries and data visualization techniques to uncover critical business patterns and generate evidence-based recommendations.
+                </p>
+            </div>
+
+            <div class="content-card">
+                <h3>Methodology & Approach</h3>
+                <p>
+                    This project employed a systematic approach to extract, transform, and analyze large-scale transactional data. Using MySQL for data warehousing and complex querying, combined with Excel for advanced visualization, the analysis identified key performance indicators, revenue trends, and product performance metrics. The methodology ensured data integrity through rigorous validation processes, achieving 99.8% data completeness across all records.
+                </p>
+            </div>
+        </section>
+
+        <!-- Technology Stack -->
+        <section class="section">
+            <div class="section-header">
+                <div class="section-tag">Technology Stack</div>
+                <h2>Tools & Technologies</h2>
+            </div>
+            <div class="tech-grid">
+                <div class="tech-item">MySQL</div>
+                <div class="tech-item">SQL Analytics</div>
+                <div class="tech-item">Microsoft Excel</div>
+                <div class="tech-item">Data Visualization</div>
+                <div class="tech-item">ETL Processing</div>
+                <div class="tech-item">Business Intelligence</div>
+            </div>
+        </section>
+
+        <!-- Achievements -->
+        <section class="section" id="achievements">
+            <div class="section-header">
+                <div class="section-tag">Key Achievements</div>
+                <h2>Project Milestones</h2>
+            </div>
+            <div class="achievements-grid">
+                <div class="achievement-item">
+                    <div class="achievement-icon">📈</div>
+                    <h4>478% Year-Over-Year Growth</h4>
+                    <p>Identified substantial revenue growth trajectory from 2010 to 2011, providing evidence of strong business momentum and market penetration success.</p>
+                </div>
+                <div class="achievement-item">
+                    <div class="achievement-icon">🎯</div>
+                    <h4>Top Revenue Product Identified</h4>
+                    <p>Discovered DOT product as the highest revenue generator at ₹2.06 Lakhs, accounting for 5.13% of total revenue with significant optimization potential.</p>
+                </div>
+                <div class="achievement-item">
+                    <div class="achievement-icon">📊</div>
+                    <h4>Interactive Analytics Dashboard</h4>
+                    <p>Developed comprehensive dashboard featuring KPI tracking, trend analysis, and product performance metrics for executive decision-making.</p>
+                </div>
+                <div class="achievement-item">
+                    <div class="achievement-icon">💡</div>
+                    <h4>Strategic Recommendations</h4>
+                    <p>Generated data-driven recommendations with projected ₹8-12 Lakhs potential revenue improvement through targeted optimizations.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Key Findings -->
+        <section class="section" id="findings">
+            <div class="section-header">
+                <div class="section-tag">Analysis Results</div>
+                <h2>Key Business Findings</h2>
+            </div>
+            <div class="findings-list">
+                <div class="finding-card">
+                    <div class="finding-number">01</div>
+                    <div class="finding-content">
+                        <h4>Revenue Concentration Analysis</h4>
+                        <p>The top 10 products contribute ₹11.54 Lakhs, representing 30% of total revenue. This concentration presents clear opportunities for focused inventory management and targeted marketing initiatives to maximize returns.</p>
+                    </div>
+                </div>
+                <div class="finding-card">
+                    <div class="finding-number">02</div>
+                    <div class="finding-content">
+                        <h4>Seasonal Performance Patterns</h4>
+                        <p>September 2011 recorded peak performance at ₹4.66 Lakhs monthly revenue. Analysis reveals Q3 as the critical sales period, enabling strategic preparation for inventory and promotional activities.</p>
+                    </div>
+                </div>
+                <div class="finding-card">
+                    <div class="finding-number">03</div>
+                    <div class="finding-content">
+                        <h4>Customer Engagement Metrics</h4>
+                        <p>Average of 5 orders per customer demonstrates strong engagement levels. This baseline provides foundation for loyalty program development and customer lifetime value optimization strategies.</p>
+                    </div>
+                </div>
+                <div class="finding-card">
+                    <div class="finding-number">04</div>
+                    <div class="finding-content">
+                        <h4>Geographic Market Distribution</h4>
+                        <p>Operations spanning UK, France, and Germany establish solid European market presence, creating platform for strategic expansion into adjacent markets with similar consumer profiles.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Recommendations -->
+        <section class="section" id="recommendations">
+            <div class="section-header">
+                <div class="section-tag">Strategic Recommendations</div>
+                <h2>Data-Driven Action Plan</h2>
+            </div>
+            <div class="recommendations-grid">
+                <div class="recommendation-card">
+                    <div class="recommendation-header">
+                        <div class="recommendation-icon">🎯</div>
+                        <h4>Inventory Optimization</h4>
+                    </div>
+                    <ul>
+                        <li>Prioritize stock allocation for DOT, 22423, and 23843 products</li>
+                        <li>Implement predictive ordering for peak season preparation</li>
+                        <li>Prevent stockouts preventing ₹50K+ potential revenue loss</li>
+                        <li>Optimize warehouse space allocation based on velocity analysis</li>
+                    </ul>
+                </div>
+                <div class="recommendation-card">
+                    <div class="recommendation-header">
+                        <div class="recommendation-icon">📢</div>
+                        <h4>Marketing Strategy</h4>
+                    </div>
+                    <ul>
+                        <li>Develop campaigns focused on top 10 revenue-generating products</li>
+                        <li>Launch seasonal promotions targeting August-September peak period</li>
+                        <li>Expected 15-20% revenue increase through targeted initiatives</li>
+                        <li>Implement A/B testing for campaign optimization</li>
+                    </ul>
+                </div>
+                <div class="recommendation-card">
+                    <div class="recommendation-header">
+                        <div class="recommendation-icon">💎</div>
+                        <h4>Customer Retention</h4>
+                    </div>
+                    <ul>
+                        <li>Design and implement comprehensive loyalty program</li>
+                        <li>Segment and target high-value customer cohorts</li>
+                        <li>Target 25% increase in repeat purchase rate</li>
+                        <li>Develop personalized engagement strategies</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Timeline -->
+        <section class="section">
+            <div class="section-header">
+                <div class="section-tag">Project Timeline</div>
+                <h2>Development Process</h2>
+            </div>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <h4>Week 1: Data Infrastructure & Preparation</h4>
+                        <p>Established MySQL database architecture, performed comprehensive data cleaning and validation, and achieved 99.8% data completeness across 541,912 records with standardized formatting and quality assurance protocols.</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <h4>Week 2: Advanced SQL Analytics</h4>
+                        <p>Developed and executed 10+ complex analytical queries for revenue trend analysis, product performance evaluation, customer behavior patterns, and temporal analysis to extract actionable business intelligence.</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <h4>Week 3: Visualization & Documentation</h4>
+                        <p>Created interactive analytics dashboard with executive KPI tracking, generated comprehensive insights documentation, and prepared strategic recommendations with supporting evidence and projected business impact analysis.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Impact Banner -->
+        <div class="impact-banner">
+            <div class="impact-content">
+                <h3>Estimated Business Impact</h3>
+                <div class="impact-value">₹8-12 Lakhs</div>
+                <p class="impact-description">Projected revenue improvement potential through implementation of data-driven recommendations and strategic optimizations</p>
+            </div>
+        </div>
+
+        <!-- CTA Section -->
+        <div class="cta-section">
+            <h2 style="margin-bottom: 20px;">Explore the Project</h2>
+            <p style="color: var(--text-light); max-width: 600px; margin: 0 auto 30px;">View the complete source code, documentation, and connect for collaboration opportunities</p>
+            <div class="cta-buttons">
+                <a href="https://github.com/Somgit001/ecommerce-sales-dashboard" class="btn btn-primary" target="_blank">
+                    <span>View GitHub Repository</span>
+                </a>
+                <a href="https://som15.onrender.com/" class="btn btn-outline" target="_blank">
+                    <span>Visit Portfolio</span>
+                </a>
+                <a href="https://www.linkedin.com/in/som-athghara-71262122b/" class="btn btn-outline" target="_blank">
+                    <span>Connect on LinkedIn</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>Som Athghara</h4>
+                <p>Data Analyst specializing in SQL, Python, and Business Intelligence with expertise in transforming complex datasets into strategic business insights.</p>
+                <div class="social-links">
+                    <a href="https://github.com/Somgit001" target="_blank" class="social-link" title="GitHub">
+                        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/>
+                        </svg>
+                    </a>
+                    <a href="https://www.linkedin.com/in/som-athghara-71262122b/" target="_blank" class="social-link" title="LinkedIn">
+                        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                        </svg>
+                    </a>
+                    <a href="mailto:athgharasom@gmail.com" class="social-link" title="Email">
+                        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+            <div class="footer-section">
+                <h4>Contact Information</h4>
+                <a href="mailto:athgharasom@gmail.com">athgharasom@gmail.com</a>
+                <a href="https://som15.onrender.com/" target="_blank">som15.onrender.com</a>
+                <a href="https://github.com/Somgit001" target="_blank">github.com/Somgit001</a>
+            </div>
+            <div class="footer-section">
+                <h4>Project Details</h4>
+                <p>Timeline: January 2026</p>
+                <p>Duration: 3 Weeks</p>
+                <p>Dataset: 541,912 Records</p>
+                <p>Version: 1.0</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 Som Athghara. All rights reserved. | E-Commerce Analytics Dashboard Project</p>
+        </div>
+    </footer>
+</body>
+</html>
